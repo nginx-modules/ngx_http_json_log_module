@@ -1,6 +1,6 @@
 
 /*
- * Copyright (C) Jiaji Zhou
+ * Copyright (C) huangchao
  */
 
 #include <ngx_config.h>
@@ -179,14 +179,29 @@ ngx_http_json_log_handler(ngx_http_request_t *r)
         for (s = 0; s < log[l].format->fields->nelts; s++) {
             index = field[s].index;
             value = ngx_http_get_indexed_variable(r, index);
-            if (value == NULL || value->not_found) {
-                json_object_set_new(obj, (char *)field[s].name.data,
-                        json_string("-"));
+            if (ngx_strcmp(field[s].name.data, "body_bytes_sent") == 0 ||
+                ngx_strcmp(field[s].name.data, "body_bytes_sent") == 0 ||
+                ngx_strcmp(field[s].name.data, "body_bytes_sent") == 0 ||
+                ngx_strcmp(field[s].name.data, "body_bytes_sent") == 0) {
+                if (value == NULL || value->not_found) {
+                    json_object_set_new(obj, (char *)field[s].name.data,
+                            json_integer(0));
+                } else {
+                    //field_val = ngx_pnalloc(r->pool, value->len + 1);
+                    //ngx_cpystrn(field_val, value->data, value->len + 1);
+                    json_object_set_new(obj, (char *)field[s].name.data,
+                            json_integer(ngx_atoi(value->data,sizeof(value->len + 1)));
+                }  
             } else {
-                field_val = ngx_pnalloc(r->pool, value->len + 1);
-                ngx_cpystrn(field_val, value->data, value->len + 1);
-                json_object_set_new(obj, (char *)field[s].name.data,
-                        json_string((char *)field_val));
+                if (value == NULL || value->not_found) {
+                    json_object_set_new(obj, (char *)field[s].name.data,
+                            json_string("-"));
+                } else {
+                    field_val = ngx_pnalloc(r->pool, value->len + 1);
+                    ngx_cpystrn(field_val, value->data, value->len + 1);
+                    json_object_set_new(obj, (char *)field[s].name.data,
+                            json_string((char *)field_val));
+                }
             }
         }
         char *json_str = json_dumps(obj, JSON_COMPACT);
