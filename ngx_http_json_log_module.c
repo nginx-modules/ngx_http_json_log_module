@@ -193,23 +193,27 @@ ngx_http_json_log_handler(ngx_http_request_t *r)
                             json_integer(-1));
                 } else {
                     json_object_set_new(obj, (char *)field[s].name.data,
-                            json_real(ngx_atof(value->data,value->len)));
+                            json_integer(ngx_atoi(value->data,value->len)));
                 }
             } else if (ngx_strcmp(field[s].name.data, "request_time") == 0){
                 if (value == NULL || value->not_found) {
                     json_object_set_new(obj, (char *)field[s].name.data,
                             json_integer(-1));
                 } else {
+                    field_val = ngx_pnalloc(r->pool, value->len + 1);
+                    ngx_cpystrn(field_val, value->data, value->len + 1);
                     json_object_set_new(obj, (char *)field[s].name.data,
-                            json_real(ngx_atof(value->data,value->len)));
+                            json_integer(strtod((char *)field_val, NULL) * 1000));
                 }
             } else if (ngx_strcmp(field[s].name.data, "upstream_response_time") == 0){
                 if (value == NULL || value->not_found) {
                     json_object_set_new(obj, (char *)field[s].name.data,
                             json_integer(-1));
                 } else {
+                    field_val = ngx_pnalloc(r->pool, value->len + 1);
+                    ngx_cpystrn(field_val, value->data, value->len + 1);
                     json_object_set_new(obj, (char *)field[s].name.data,
-                            json_real(ngx_atof(value->data,value->len)));
+                            json_integer(strtod((char *)field_val, NULL) * 1000));
                 }
             } else {
                 if (value == NULL || value->not_found) {
