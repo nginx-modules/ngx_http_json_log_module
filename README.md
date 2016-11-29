@@ -54,7 +54,7 @@ file, which is similar to `log_format` in the nginx http log module.
 
 ## Sample config
 
-```
+```nginx
 http {
     include       mime.types;
     default_type  application/octet-stream;
@@ -87,7 +87,7 @@ http {
 
 Output in log file:
 
-```
+```json
 {
   "http_x_forwarded_for": "-",
   "http_user_agent": "ApacheBench/2.3",
